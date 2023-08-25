@@ -37,10 +37,15 @@ module.exports = grammar({
     brief_header: $ => prec(1, choice(
       seq(alias(tagName('brief'), $.tag_name), $.brief_description),
       // brief desc that ends at dot
-      alias(/[^\s\\*@<\[][^.]+[.]/, $.brief_description),
+      alias(/[^\s\\*@<\[][^.<]+[.]/, $.brief_description),
     )),
 
-    description: $ => repeat1(choice($._text, $.emphasis)),
+    description: $ => repeat1(choice(
+      $._text,
+      $.emphasis,
+      $.link,
+      $.function_link,
+    )),
 
     tag: $ => prec.right(choice(
       // type, name, and description
@@ -137,7 +142,7 @@ module.exports = grammar({
 
     qualified_identifier: $ => seq(
       $.identifier,
-      repeat1(seq('::', $.identifier)),
+      repeat1(seq(token.immediate('::'), $.identifier)),
     ),
 
     function: $ => seq(
@@ -150,6 +155,26 @@ module.exports = grammar({
     storageclass: _ => seq('[', choice('in', 'out', 'inout'), ']'),
 
     emphasis: $ => seq('\\a', alias(/[a-zA-Z_][a-zA-Z_0-9]*/, $.text)),
+
+    link: $ => seq(
+      '<a',
+      /[^>]*/,
+      '>',
+      alias(/[^<]*/, $.text),
+      '</a>',
+    ),
+
+    function_link: _ => token(choice(
+      seq(/[a-zA-Z_][a-zA-Z_0-9]*/, '(', /[^)]*/, ')'),
+      seq('::', /[a-zA-Z_][a-zA-Z_0-9]*/),
+      seq(
+        /[a-zA-Z_][a-zA-Z_0-9]*/,
+        repeat1(seq('::', /[a-zA-Z_][a-zA-Z_0-9]*/)),
+        '(',
+        /[^)]*/,
+        ')',
+      ),
+    )),
 
     _text: _ => token(prec(-1, /[^*{}@\\\s][^*!{}\\\n]*([^*/{}\\\n][^*{}\\\n]*\*+)*/)),
 

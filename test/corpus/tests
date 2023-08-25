@@ -80,7 +80,7 @@ Function docs with @
 
 (document
   (brief_header (brief_description))
-  (tag (tag_name) (description))
+  (tag (tag_name) (description (function_link)))
   (tag (tag_name) (identifier) (description))
   (tag (tag_name) (identifier) (description)))
 
@@ -132,3 +132,33 @@ Multiple Params
     (identifier)
     (identifier)
     (description)))
+
+=======================================
+Function Links
+=======================================
+
+/*! Test
+ * @see foo()
+ * @see ::bar
+ * @see baz::qux(int quux)
+*/
+
+---
+
+(document
+  (description)
+  (tag (tag_name) (description (function_link)))
+  (tag (tag_name) (description (function_link)))
+  (tag (tag_name) (description (function_link))))
+
+=======================================
+URL Links
+=======================================
+
+/*! Test
+ * <a href="http://www.example.com">Example</a>
+ */
+
+---
+
+(document (description (link (text))))
