@@ -9,6 +9,8 @@
 
 (function (identifier) @function)
 
+(function_link) @function
+
 (emphasis) @text.emphasis
 
 "\\a" @tag
@@ -20,6 +22,12 @@
 ] @storageclass
 
 "~" @operator
+
+[
+  "<a"
+  ">"
+  "</a>"
+] @tag
 
 [
   ","
