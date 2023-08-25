@@ -1,0 +1,44 @@
+{
+  "name": "tree-sitter-doxygen",
+  "version": "1.0.0",
+  "description": "Doxygen grammar for tree-sitter",
+  "main": "bindings/node",
+  "keywords": [
+    "parser",
+    "lexer",
+    "doxygen"
+  ],
+  "author": "Amaan Qureshi <amaanq12@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amaanq/tree-sitter-doxygen/issues"
+  },
+  "homepage": "https://github.com/amaanq/tree-sitter-doxygen#readme",
+  "dependencies": {
+    "nan": "^2.17.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.47.0",
+    "eslint-config-google": "^0.14.0",
+    "tree-sitter-cli": "0.20.8"
+  },
+  "repository": "https://github.com/amaanq/tree-sitter-doxygen",
+  "scripts": {
+    "build": "tree-sitter generate && node-gyp build",
+    "lint": "eslint grammar.js",
+    "parse": "tree-sitter parse",
+    "test": "tree-sitter test"
+  },
+  "tree-sitter": [
+    {
+      "scope": "text.doxygen",
+      "injection-regex": "doxygen",
+      "highlights": [
+        "queries/highlights.scm"
+      ],
+      "injections": [
+        "queries/injections.scm"
+      ]
+    }
+  ]
+}
