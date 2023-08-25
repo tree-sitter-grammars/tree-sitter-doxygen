@@ -29,6 +29,14 @@
         {
           "type": "emphasis",
           "named": true
+        },
+        {
+          "type": "function_link",
+          "named": true
+        },
+        {
+          "type": "link",
+          "named": true
         }
       ]
     }
@@ -90,6 +98,21 @@
     "type": "identifier",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "link",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "text",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "qualified_identifier",
@@ -184,6 +207,18 @@
     "named": false
   },
   {
+    "type": "</a>",
+    "named": false
+  },
+  {
+    "type": "<a",
+    "named": false
+  },
+  {
+    "type": ">",
+    "named": false
+  },
+  {
     "type": "[",
     "named": false
   },
@@ -201,6 +236,10 @@
   },
   {
     "type": "brief_description",
+    "named": true
+  },
+  {
+    "type": "function_link",
     "named": true
   },
   {
