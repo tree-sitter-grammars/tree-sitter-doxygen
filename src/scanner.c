@@ -32,11 +32,11 @@ bool tree_sitter_doxygen_external_scanner_scan(void *payload, TSLexer *lexer,
     bool advanced_once = false;
 
     while ((iswspace(lexer->lookahead) || lexer->lookahead == '*') &&
-           lexer->lookahead != '\n') {
+           lexer->lookahead != '\n' && !lexer->eof(lexer)) {
         skip(lexer);
     }
 
-    if (lexer->lookahead == '\n') {
+    if (lexer->lookahead == '\n' || lexer->eof(lexer)) {
         return false;
     }
 
@@ -62,7 +62,7 @@ content:
         advance(lexer);
     }
 
-    if (lexer->get_column(lexer) == column_start) {
+    if (!lexer->eof(lexer) && lexer->get_column(lexer) == column_start) {
         goto content;
     } else if (advanced_once) {
         lexer->result_symbol = BRIEF_DESCRIPTION;
