@@ -15,6 +15,10 @@ module.exports = grammar({
 
   externals: $ => [
     $.brief_description,
+    $.code_block_start,
+    $.code_block_language,
+    $.code_block_content,
+    $.code_block_end,
   ],
 
   extras: _ => [
@@ -30,7 +34,7 @@ module.exports = grammar({
       $._begin,
       optional($.brief_header),
       optional($.description),
-      repeat($.tag),
+      repeat(choice($.tag, $.code_block, $._text_line)),
       $._end,
     ),
 
@@ -73,16 +77,16 @@ module.exports = grammar({
       seq(
         alias($.tag_name_with_types, $.tag_name),
         commaSep1(seq(
-          $.function,
+          field('function', choice($.function_link, $.identifier)),
           optional(alias(/[a-zA-Z_][a-zA-Z_0-9]*\s+/, $._text)),
         )),
-        optional($.function),
+        optional(field('function', choice($.function_link, $.identifier))),
       ),
 
       // c types
       seq(
         alias($.tag_name_with_self_types, $.tag_name),
-        alias(/[^\s].*/, $.type),
+        alias(/.*/, $.type),
       ),
 
       // type and description
@@ -125,7 +129,7 @@ module.exports = grammar({
       tagName('var'),
     )),
 
-    tag_name: _ => /(@|\\)([a-zA-Z_]+|\{|\})/,
+    tag_name: _ => /(@|\\)~?([a-zA-Z_]+|\{|\})/,
 
     _expression: $ => choice(
       $.identifier,
@@ -165,22 +169,31 @@ module.exports = grammar({
     ),
 
     function_link: _ => token(choice(
-      seq(/[a-zA-Z_][a-zA-Z_0-9]*/, '(', /[^)]*/, ')'),
-      seq('::', /[a-zA-Z_][a-zA-Z_0-9]*/),
+      seq(/~?[a-zA-Z_][a-zA-Z_0-9]*/, '(', /[^)]*/, ')'),
+      seq('::', /~?[a-zA-Z_][a-zA-Z_0-9]*/),
       seq(
-        /[a-zA-Z_][a-zA-Z_0-9]*/,
-        repeat1(seq('::', /[a-zA-Z_][a-zA-Z_0-9]*/)),
+        /~?[a-zA-Z_][a-zA-Z_0-9]*/,
+        repeat1(seq('::', /~?[a-zA-Z_][a-zA-Z_0-9]*/)),
         '(',
         /[^)]*/,
         ')',
       ),
     )),
 
+    code_block: $ => seq(
+      $.code_block_start,
+      $.code_block_language,
+      $.code_block_content,
+      $.code_block_end,
+    ),
+
     _text: _ => token(prec(-1, /[^*{}@\\\s][^*!{}\\\n]*([^*/{}\\\n][^*{}\\\n]*\*+)*/)),
 
     _begin: _ => token(seq('/', repeat(choice('*', '/')), optional('!'), optional('<'))),
 
     _end: _ => choice('/', '*/'),
+
+    _text_line: _ => token(prec(-2, /[^\s<@\\*].*/)),
   },
 });
 
