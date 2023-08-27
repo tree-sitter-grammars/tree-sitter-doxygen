@@ -1,7 +1,8 @@
 #include <ctype.h>
 #include <stdio.h>
-#include <tree_sitter/parser.h>
 #include <wctype.h>
+
+#include "tree_sitter/parser.h"
 
 enum TokenType {
     BRIEF_DESCRIPTION,
