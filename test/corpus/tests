@@ -11,7 +11,9 @@ Brief description
 ---
 
 (document
-  (brief_header (tag_name) (brief_description))
+  (brief_header
+    (tag_name)
+    (brief_description))
   (description))
 
 ========================================
@@ -25,7 +27,8 @@ Brief description ending with dot
 ---
 
 (document
-  (brief_header (brief_description))
+  (brief_header
+    (brief_description))
   (description))
 
 ========================================
@@ -55,15 +58,11 @@ Function docs with \
     (description))
   (tag
     (tag_name)
-    (function
-      (identifier))
-    (function
-      (identifier))
-    (function
-      (identifier))
+    (function_link)
+    (function_link)
+    (function_link)
     (_text)
-    (function
-      (identifier))))
+    (function_link)))
 
 ========================================
 Function docs with @
@@ -79,10 +78,20 @@ Function docs with @
 ---
 
 (document
-  (brief_header (brief_description))
-  (tag (tag_name) (description (function_link)))
-  (tag (tag_name) (identifier) (description))
-  (tag (tag_name) (identifier) (description)))
+  (brief_header
+    (brief_description))
+  (tag
+    (tag_name)
+    (description
+      (function_link)))
+  (tag
+    (tag_name)
+    (identifier)
+    (description))
+  (tag
+    (tag_name)
+    (identifier)
+    (description)))
 
 ========================================
 Storageclass
@@ -92,7 +101,10 @@ Storageclass
 
 ---
 
-(document (tag (storageclass) (description)))
+(document
+  (tag
+    (storageclass)
+    (description)))
 
 =======================================
 Param with Storageclass
@@ -109,10 +121,23 @@ Param with Storageclass
 ---
 
 (document
-  (brief_header (brief_description))
-  (tag (tag_name) (storageclass) (identifier) (description))
-  (tag (tag_name) (storageclass) (identifier) (description))
-  (tag (tag_name) (storageclass) (identifier) (description)))
+  (brief_header
+    (brief_description))
+  (tag
+    (tag_name)
+    (storageclass)
+    (identifier)
+    (description))
+  (tag
+    (tag_name)
+    (storageclass)
+    (identifier)
+    (description))
+  (tag
+    (tag_name)
+    (storageclass)
+    (identifier)
+    (description)))
 
 =======================================
 Multiple Params
@@ -125,7 +150,8 @@ Multiple Params
 ---
 
 (document
-  (brief_header (brief_description))
+  (brief_header
+    (brief_description))
   (tag
     (tag_name)
     (identifier)
@@ -147,9 +173,18 @@ Function Links
 
 (document
   (description)
-  (tag (tag_name) (description (function_link)))
-  (tag (tag_name) (description (function_link)))
-  (tag (tag_name) (description (function_link))))
+  (tag
+    (tag_name)
+    (description
+      (function_link)))
+  (tag
+    (tag_name)
+    (description
+      (function_link)))
+  (tag
+    (tag_name)
+    (description
+      (function_link))))
 
 =======================================
 URL Links
@@ -161,4 +196,19 @@ URL Links
 
 ---
 
-(document (description (link (text))))
+(document
+  (description
+    (link
+      (text))))
+
+=======================================
+Param
+=======================================
+
+/*!
+ * \param foo foo
+ */
+
+---
+
+(document (tag (tag_name) (identifier) (description)))
