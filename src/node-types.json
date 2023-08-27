@@ -19,6 +19,33 @@
     }
   },
   {
+    "type": "code_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "code_block_content",
+          "named": true
+        },
+        {
+          "type": "code_block_end",
+          "named": true
+        },
+        {
+          "type": "code_block_language",
+          "named": true
+        },
+        {
+          "type": "code_block_start",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "description",
     "named": true,
     "fields": {},
@@ -51,6 +78,10 @@
       "types": [
         {
           "type": "brief_header",
+          "named": true
+        },
+        {
+          "type": "code_block",
           "named": true
         },
         {
@@ -137,7 +168,22 @@
   {
     "type": "tag",
     "named": true,
-    "fields": {},
+    "fields": {
+      "function": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "function_link",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
@@ -236,6 +282,22 @@
   },
   {
     "type": "brief_description",
+    "named": true
+  },
+  {
+    "type": "code_block_content",
+    "named": true
+  },
+  {
+    "type": "code_block_end",
+    "named": true
+  },
+  {
+    "type": "code_block_language",
+    "named": true
+  },
+  {
+    "type": "code_block_start",
     "named": true
   },
   {

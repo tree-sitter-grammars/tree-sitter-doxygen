@@ -35,8 +35,21 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "SYMBOL",
-            "name": "tag"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "tag"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "code_block"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_text_line"
+              }
+            ]
           }
         },
         {
@@ -261,8 +274,21 @@
                     "type": "SEQ",
                     "members": [
                       {
-                        "type": "SYMBOL",
-                        "name": "function"
+                        "type": "FIELD",
+                        "name": "function",
+                        "content": {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "SYMBOL",
+                              "name": "function_link"
+                            },
+                            {
+                              "type": "SYMBOL",
+                              "name": "identifier"
+                            }
+                          ]
+                        }
                       },
                       {
                         "type": "CHOICE",
@@ -296,8 +322,21 @@
                           "type": "SEQ",
                           "members": [
                             {
-                              "type": "SYMBOL",
-                              "name": "function"
+                              "type": "FIELD",
+                              "name": "function",
+                              "content": {
+                                "type": "CHOICE",
+                                "members": [
+                                  {
+                                    "type": "SYMBOL",
+                                    "name": "function_link"
+                                  },
+                                  {
+                                    "type": "SYMBOL",
+                                    "name": "identifier"
+                                  }
+                                ]
+                              }
                             },
                             {
                               "type": "CHOICE",
@@ -327,8 +366,21 @@
                 "type": "CHOICE",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "function"
+                    "type": "FIELD",
+                    "name": "function",
+                    "content": {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "function_link"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "identifier"
+                        }
+                      ]
+                    }
                   },
                   {
                     "type": "BLANK"
@@ -353,7 +405,7 @@
                 "type": "ALIAS",
                 "content": {
                   "type": "PATTERN",
-                  "value": "[^\\s].*"
+                  "value": ".*"
                 },
                 "named": true,
                 "value": "type"
@@ -612,7 +664,7 @@
     },
     "tag_name": {
       "type": "PATTERN",
-      "value": "(@|\\\\)([a-zA-Z_]+|\\{|\\})"
+      "value": "(@|\\\\)~?([a-zA-Z_]+|\\{|\\})"
     },
     "_expression": {
       "type": "CHOICE",
@@ -780,7 +832,7 @@
             "members": [
               {
                 "type": "PATTERN",
-                "value": "[a-zA-Z_][a-zA-Z_0-9]*"
+                "value": "~?[a-zA-Z_][a-zA-Z_0-9]*"
               },
               {
                 "type": "STRING",
@@ -805,7 +857,7 @@
               },
               {
                 "type": "PATTERN",
-                "value": "[a-zA-Z_][a-zA-Z_0-9]*"
+                "value": "~?[a-zA-Z_][a-zA-Z_0-9]*"
               }
             ]
           },
@@ -814,7 +866,7 @@
             "members": [
               {
                 "type": "PATTERN",
-                "value": "[a-zA-Z_][a-zA-Z_0-9]*"
+                "value": "~?[a-zA-Z_][a-zA-Z_0-9]*"
               },
               {
                 "type": "REPEAT1",
@@ -827,7 +879,7 @@
                     },
                     {
                       "type": "PATTERN",
-                      "value": "[a-zA-Z_][a-zA-Z_0-9]*"
+                      "value": "~?[a-zA-Z_][a-zA-Z_0-9]*"
                     }
                   ]
                 }
@@ -848,6 +900,27 @@
           }
         ]
       }
+    },
+    "code_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "code_block_start"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "code_block_language"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "code_block_content"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "code_block_end"
+        }
+      ]
     },
     "_text": {
       "type": "TOKEN",
@@ -924,6 +997,17 @@
           "value": "*/"
         }
       ]
+    },
+    "_text_line": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": -2,
+        "content": {
+          "type": "PATTERN",
+          "value": "[^\\s<@\\\\*].*"
+        }
+      }
     }
   },
   "extras": [
@@ -975,6 +1059,22 @@
     {
       "type": "SYMBOL",
       "name": "brief_description"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "code_block_start"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "code_block_language"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "code_block_content"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "code_block_end"
     }
   ],
   "inline": [],
