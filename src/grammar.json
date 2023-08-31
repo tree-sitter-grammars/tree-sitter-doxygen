@@ -118,6 +118,10 @@
           },
           {
             "type": "SYMBOL",
+            "name": "code_word"
+          },
+          {
+            "type": "SYMBOL",
             "name": "link"
           },
           {
@@ -792,6 +796,24 @@
         }
       ]
     },
+    "code_word": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "\\c"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[a-zA-Z_][a-zA-Z_0-9]*"
+          },
+          "named": true,
+          "value": "code"
+        }
+      ]
+    },
     "link": {
       "type": "SEQ",
       "members": [
@@ -902,23 +924,83 @@
       }
     },
     "code_block": {
-      "type": "SEQ",
+      "type": "CHOICE",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "code_block_start"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "code_block_start"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "code_block_language"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "code_block_content"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "code_block_end"
+            }
+          ]
         },
         {
-          "type": "SYMBOL",
-          "name": "code_block_language"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "code_block_content"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "code_block_end"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "@code"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "IMMEDIATE_TOKEN",
+                      "content": {
+                        "type": "STRING",
+                        "value": "{"
+                      }
+                    },
+                    {
+                      "type": "IMMEDIATE_TOKEN",
+                      "content": {
+                        "type": "STRING",
+                        "value": "."
+                      }
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "code_block_language"
+                    },
+                    {
+                      "type": "IMMEDIATE_TOKEN",
+                      "content": {
+                        "type": "STRING",
+                        "value": "}"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "code_block_content"
+            },
+            {
+              "type": "STRING",
+              "value": "@endcode"
+            }
+          ]
         }
       ]
     },

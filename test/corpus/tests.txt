@@ -212,3 +212,49 @@ Param
 ---
 
 (document (tag (tag_name) (identifier) (description)))
+
+=======================================
+Code Blocks
+=======================================
+
+/*!
+ ```c
+ int main() {
+	 return 0;
+ }
+ ```
+
+ @code{.cpp}
+ int main() {
+	 return 0;
+ }
+ @endcode
+ */
+
+---
+
+(document
+  (code_block
+    (code_block_start)
+    (code_block_language)
+    (code_block_content)
+    (code_block_end))
+  (code_block
+    (code_block_language)
+    (code_block_content)))
+
+=======================================
+Code Word
+=======================================
+
+/*!
+ * My function foo
+ It returns \c void
+*/
+
+---
+
+(document
+  (description
+    (code_word
+      (code))))

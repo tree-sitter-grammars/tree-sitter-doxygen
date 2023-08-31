@@ -21,6 +21,13 @@ static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
 
 static inline void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
 
+/* #define advance(lexer) \ */
+/*     { \ */
+/*         printf("advance %c, col %d, L%d\n", lexer->lookahead, \ */
+/*                lexer->get_column(lexer), __LINE__); \ */
+/*         lexer->advance(lexer, false); \ */
+/*     } */
+
 unsigned tree_sitter_doxygen_external_scanner_serialize(void *payload,
                                                         char *buffer) {
     Scanner *scanner = (Scanner *)payload;
@@ -142,10 +149,15 @@ bool tree_sitter_doxygen_external_scanner_scan(void *payload, TSLexer *lexer,
         }
 
         lexer->result_symbol = CODE_BLOCK_LANGUAGE;
-        return lexer->lookahead == '\n';
+        return lexer->lookahead == '\n' || lexer->lookahead == '}';
     }
 
     if (valid_symbols[CODE_BLOCK_CONTENT]) {
+        // optional language
+        if (lexer->lookahead == '{') {
+            return false;
+        }
+
         // skip ws and newline before block
         while (iswspace(lexer->lookahead)) {
             skip(lexer);
@@ -154,7 +166,8 @@ bool tree_sitter_doxygen_external_scanner_scan(void *payload, TSLexer *lexer,
             }
         }
 
-        while (lexer->lookahead != '`' && !lexer->eof(lexer)) {
+        while (lexer->lookahead != '`' && lexer->lookahead != '@' &&
+               !lexer->eof(lexer)) {
             advance(lexer);
         }
 
@@ -177,6 +190,23 @@ bool tree_sitter_doxygen_external_scanner_scan(void *payload, TSLexer *lexer,
                 lexer->result_symbol = CODE_BLOCK_CONTENT;
                 return true;
             }
+        }
+
+        if (lexer->lookahead == '@') {
+            lexer->mark_end(lexer);
+            advance(lexer);
+            const char *const remainder = "endcode";
+
+            for (uint32_t i = 0; i < 7; i++) {
+                if (lexer->lookahead != remainder[i]) {
+                    return false;
+                }
+
+                advance(lexer);
+            }
+
+            lexer->result_symbol = CODE_BLOCK_CONTENT;
+            return true;
         }
 
         return false;

@@ -46,6 +46,21 @@
     }
   },
   {
+    "type": "code_word",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "code",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "description",
     "named": true,
     "fields": {},
@@ -53,6 +68,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "code_word",
+          "named": true
+        },
         {
           "type": "emphasis",
           "named": true
@@ -245,6 +264,10 @@
     "named": false
   },
   {
+    "type": ".",
+    "named": false
+  },
+  {
     "type": "/",
     "named": false
   },
@@ -265,11 +288,23 @@
     "named": false
   },
   {
+    "type": "@code",
+    "named": false
+  },
+  {
+    "type": "@endcode",
+    "named": false
+  },
+  {
     "type": "[",
     "named": false
   },
   {
     "type": "\\a",
+    "named": false
+  },
+  {
+    "type": "\\c",
     "named": false
   },
   {
@@ -282,6 +317,10 @@
   },
   {
     "type": "brief_description",
+    "named": true
+  },
+  {
+    "type": "code",
     "named": true
   },
   {
@@ -323,6 +362,14 @@
   {
     "type": "text",
     "named": true
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "}",
+    "named": false
   },
   {
     "type": "~",

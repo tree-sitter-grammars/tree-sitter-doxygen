@@ -47,6 +47,7 @@ module.exports = grammar({
     description: $ => repeat1(choice(
       $._text,
       $.emphasis,
+      $.code_word,
       $.link,
       $.function_link,
     )),
@@ -160,6 +161,8 @@ module.exports = grammar({
 
     emphasis: $ => seq('\\a', alias(/[a-zA-Z_][a-zA-Z_0-9]*/, $.text)),
 
+    code_word: $ => seq('\\c', alias(/[a-zA-Z_][a-zA-Z_0-9]*/, $.code)),
+
     link: $ => seq(
       '<a',
       /[^>]*/,
@@ -180,11 +183,24 @@ module.exports = grammar({
       ),
     )),
 
-    code_block: $ => seq(
-      $.code_block_start,
-      $.code_block_language,
-      $.code_block_content,
-      $.code_block_end,
+    code_block: $ => choice(
+      seq(
+        $.code_block_start,
+        $.code_block_language,
+        $.code_block_content,
+        $.code_block_end,
+      ),
+      seq(
+        '@code',
+        optional(seq(
+          token.immediate('{'),
+          token.immediate('.'),
+          $.code_block_language,
+          token.immediate('}'),
+        )),
+        $.code_block_content,
+        '@endcode',
+      ),
     ),
 
     _text: _ => token(prec(-1, /[^*{}@\\\s][^*!{}\\\n]*([^*/{}\\\n][^*{}\\\n]*\*+)*/)),
