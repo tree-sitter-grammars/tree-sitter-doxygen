@@ -30,12 +30,20 @@ module.exports = grammar({
   ],
 
   rules: {
-    document: $ => seq(
-      $._begin,
-      optional($.brief_header),
-      optional($.description),
-      repeat(choice($.tag, $.code_block, $._text_line)),
-      $._end,
+    document: $ => choice(
+      seq(
+         $._multiline_begin,
+         optional($.brief_header),
+         optional($.description),
+         repeat(choice($.tag, $.code_block, $._text_line)),
+         $._multiline_end,
+       ),
+      seq(
+        $._singleline_begin,
+         optional($.brief_header),
+         optional($.description),
+         repeat($.tag),
+      ),
     ),
 
     brief_header: $ => prec(1, choice(
@@ -205,9 +213,11 @@ module.exports = grammar({
 
     _text: _ => token(prec(-1, /[^*{}@\\\s][^*!{}\\\n]*([^*/{}\\\n][^*{}\\\n]*\*+)*/)),
 
-    _begin: _ => token(seq('/', repeat(choice('*', '/')), optional('!'), optional('<'))),
+    _singleline_begin: _ => token(seq('//', optional('!'), optional('<'))),
 
-    _end: _ => choice('/', '*/'),
+    _multiline_begin: _ => token(seq('/', repeat(choice('*', '/')), optional('!'), optional('<'))),
+
+    _multiline_end: _ => choice('/', '*/'),
 
     _text_line: _ => token(prec(-2, /[^\s<@\\*].*/)),
   },
