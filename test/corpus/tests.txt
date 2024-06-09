@@ -13,7 +13,8 @@ Brief description
 (document
   (brief_header
     (tag_name)
-    (brief_description))
+    (brief_description
+      (brief_text)))
   (description))
 
 ========================================

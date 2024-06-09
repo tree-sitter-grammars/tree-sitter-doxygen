@@ -14,7 +14,7 @@ module.exports = grammar({
   name: 'doxygen',
 
   externals: $ => [
-    $.brief_description,
+    $.brief_text,
     $.code_block_start,
     $.code_block_language,
     $.code_block_content,
@@ -43,6 +43,11 @@ module.exports = grammar({
       // brief desc that ends at dot
       alias(/[^\s\\*@<\[][^.<]+[.]/, $.brief_description),
     )),
+
+    brief_description: $ => prec.right(repeat1(choice(
+      $.brief_text,
+      $.tag_name,
+    ))),
 
     description: $ => repeat1(choice(
       $._text,
