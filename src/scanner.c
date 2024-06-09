@@ -69,7 +69,16 @@ bool tree_sitter_doxygen_external_scanner_scan(void *payload, TSLexer *lexer, co
     content:
         while (lexer->lookahead != '\n' && !lexer->eof(lexer) && lexer->lookahead != '\\') {
             advanced_once = true;
-            advance(lexer);
+            if (lexer->lookahead == '*') {
+                lexer->mark_end(lexer);
+                advance(lexer);
+                if (lexer->lookahead == '/') {
+                    lexer->result_symbol = BRIEF_TEXT;
+                    return advanced_once;
+                }
+            } else {
+                advance(lexer);
+            }
         }
 
         if (lexer->eof(lexer)) {
