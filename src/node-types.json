@@ -1,5 +1,24 @@
 [
   {
+    "type": "brief_description",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "brief_text",
+          "named": true
+        },
+        {
+          "type": "tag_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "brief_header",
     "named": true,
     "fields": {},
@@ -208,10 +227,6 @@
       "required": true,
       "types": [
         {
-          "type": "_text",
-          "named": true
-        },
-        {
           "type": "description",
           "named": true
         },
@@ -312,11 +327,7 @@
     "named": false
   },
   {
-    "type": "_text",
-    "named": true
-  },
-  {
-    "type": "brief_description",
+    "type": "brief_text",
     "named": true
   },
   {
