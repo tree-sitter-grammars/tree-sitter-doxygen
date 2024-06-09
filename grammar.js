@@ -177,13 +177,13 @@ module.exports = grammar({
     ),
 
     function_link: _ => token(choice(
-      seq(/~?[a-zA-Z_][a-zA-Z_0-9]*/, '(', /[^)]*/, ')'),
+      seq(/~?[a-zA-Z_][a-zA-Z_0-9]*/, '(', /[^)\n]*/, ')'),
       seq('::', /~?[a-zA-Z_][a-zA-Z_0-9]*/),
       seq(
         /~?[a-zA-Z_][a-zA-Z_0-9]*/,
         repeat1(seq('::', /~?[a-zA-Z_][a-zA-Z_0-9]*/)),
         '(',
-        /[^)]*/,
+        /[^)\n]*/,
         ')',
       ),
     )),
