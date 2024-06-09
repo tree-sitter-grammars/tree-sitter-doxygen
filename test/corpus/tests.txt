@@ -62,7 +62,6 @@ Function docs with \
     (function_link)
     (function_link)
     (function_link)
-    (_text)
     (function_link)))
 
 ========================================

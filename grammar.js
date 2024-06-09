@@ -84,7 +84,7 @@ module.exports = grammar({
         alias($.tag_name_with_types, $.tag_name),
         commaSep1(seq(
           field('function', choice($.function_link, $.identifier)),
-          optional(alias(/[a-zA-Z_][a-zA-Z_0-9]*\s+/, $._text)),
+          optional(/[a-zA-Z_][a-zA-Z_0-9]*\s+/),
         )),
         optional(field('function', choice($.function_link, $.identifier))),
       ),
