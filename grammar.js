@@ -133,6 +133,8 @@ module.exports = grammar({
     tag_name_with_type: _ => token(choice(
       tagName('class'),
       tagName('var'),
+      tagName('defgroup'),
+      tagName('addtogroup'),
     )),
 
     tag_name: _ => /(@|\\)~?([a-zA-Z_]+|\{|\})/,
