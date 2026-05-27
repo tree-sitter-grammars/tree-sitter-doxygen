@@ -1,0 +1,195 @@
+// Doxygen grammar for tree-sitter (native DSL).
+// Translated from grammar.js.
+
+// JS `tagName(name)` -> `choice('@name', '\\name')`.
+macro tag_name_of(name: str_t) rule_t {
+    choice(concat("@", name), concat("\\", name))
+}
+
+macro comma_sep1(rule: rule_t) rule_t {
+    seq(rule, repeat(seq(",", rule)))
+}
+
+grammar {
+    language: "doxygen",
+    externals: [
+        brief_text,
+        code_block_start,
+        code_block_language,
+        code_block_content,
+        code_block_end,
+    ],
+    extras: [token(choice(
+        seq(regexp(r"\n"), regexp(r"[ \t]*"), repeat(seq("*", regexp(r"[ \t]*")))),
+        regexp(r"\s"),
+    ))],
+}
+
+rule document {
+    choice(
+        seq(
+            _multiline_begin,
+            optional(brief_header),
+            optional(description),
+            repeat(choice(tag, code_block, _text_line)),
+            _multiline_end,
+        ),
+        seq(
+            _singleline_begin,
+            optional(brief_header),
+            optional(description),
+            repeat(tag),
+        ),
+    )
+}
+
+rule brief_header {
+    prec(1, choice(
+        seq(alias(tag_name_of("brief"), tag_name), brief_description),
+        alias(regexp(r"[^\s\\*@<\[][^.<]+[.]"), brief_description),
+    ))
+}
+
+rule brief_description {
+    prec_right(0, repeat1(choice(brief_text, tag_name)))
+}
+
+rule description {
+    repeat1(choice(_text, emphasis, code_word, link, function_link))
+}
+
+rule tag {
+    prec_right(0, choice(
+        seq(
+            alias(tag_name_with_argument, tag_name),
+            optional(_expression),
+            optional(description),
+        ),
+        seq(
+            alias(tag_name_with_multiple_arguments, tag_name),
+            optional(storageclass),
+            comma_sep1(_expression),
+            optional(description),
+        ),
+        seq(storageclass, optional(description)),
+        seq(
+            alias(tag_name_with_types, tag_name),
+            comma_sep1(seq(
+                field(function, choice(function_link, identifier)),
+                optional(regexp(r"[a-zA-Z_][a-zA-Z_0-9]*\s+")),
+            )),
+            optional(field(function, choice(function_link, identifier))),
+        ),
+        seq(
+            alias(tag_name_with_self_types, tag_name),
+            alias(regexp(r".*"), type),
+        ),
+        seq(
+            alias(tag_name_with_type, tag_name),
+            optional(alias(identifier, type)),
+            optional(description),
+        ),
+        seq(tag_name, optional(description)),
+    ))
+}
+
+rule tag_name_with_argument {
+    token(choice(tag_name_of("namespace"), tag_name_of("exception")))
+}
+
+rule tag_name_with_multiple_arguments {
+    token(tag_name_of("param"))
+}
+
+rule tag_name_with_types {
+    token(tag_name_of("sa"))
+}
+
+rule tag_name_with_self_types {
+    token(choice(
+        tag_name_of("fn"), tag_name_of("property"), tag_name_of("var"),
+        tag_name_of("overload"), tag_name_of("typedef"),
+    ))
+}
+
+rule tag_name_with_type {
+    token(choice(
+        tag_name_of("class"), tag_name_of("var"),
+        tag_name_of("defgroup"), tag_name_of("addtogroup"),
+    ))
+}
+
+rule tag_name { regexp(r"(@|\\)~?([a-zA-Z_]+|\{|\})") }
+
+rule _expression {
+    choice(identifier, qualified_identifier, function)
+}
+
+rule identifier { regexp(r"[a-zA-Z_][a-zA-Z_0-9]*") }
+
+rule qualified_identifier {
+    seq(identifier, repeat1(seq(token_immediate("::"), identifier)))
+}
+
+rule function { seq(optional("~"), identifier, "(", ")") }
+
+rule storageclass { seq("[", choice("in", "out", "inout"), "]") }
+
+rule emphasis {
+    seq("\\a", alias(regexp(r"[a-zA-Z_][a-zA-Z_0-9]*"), text))
+}
+
+rule code_word {
+    seq("\\c", alias(regexp(r"[a-zA-Z_][a-zA-Z_0-9]*"), code))
+}
+
+rule link {
+    seq("<a", regexp(r"[^>]*"), ">", alias(regexp(r"[^<]*"), text), "</a>")
+}
+
+rule function_link {
+    token(choice(
+        seq(regexp(r"~?[a-zA-Z_][a-zA-Z_0-9]*"), "(", regexp(r"[^)\n]*"), ")"),
+        seq("::", regexp(r"~?[a-zA-Z_][a-zA-Z_0-9]*")),
+        seq(
+            regexp(r"~?[a-zA-Z_][a-zA-Z_0-9]*"),
+            repeat1(seq("::", regexp(r"~?[a-zA-Z_][a-zA-Z_0-9]*"))),
+            "(",
+            regexp(r"[^)\n]*"),
+            ")",
+        ),
+    ))
+}
+
+rule code_block {
+    choice(
+        seq(code_block_start, code_block_language, code_block_content, code_block_end),
+        seq(
+            "@code",
+            optional(seq(
+                token_immediate("{"),
+                token_immediate("."),
+                code_block_language,
+                token_immediate("}"),
+            )),
+            code_block_content,
+            "@endcode",
+        ),
+    )
+}
+
+rule _text {
+    token(prec(-1, regexp(r"[^*{}@\\\s][^*!{}\\\n]*([^*/{}\\\n][^*{}\\\n]*\*+)*")))
+}
+
+rule _singleline_begin {
+    token(seq("//", optional("!"), optional("<")))
+}
+
+rule _multiline_begin {
+    token(seq("/", repeat(choice("*", "/")), optional("!"), optional("<")))
+}
+
+rule _multiline_end { choice("/", "*/") }
+
+rule _text_line { token(prec(-2, regexp(r"[^\s<@\\*].*"))) }
