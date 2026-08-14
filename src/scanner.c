@@ -1,8 +1,6 @@
-#include <ctype.h>
-#include <stdio.h>
-#include <wctype.h>
-
 #include "tree_sitter/parser.h"
+#include <assert.h>
+#include <wctype.h>
 
 enum TokenType {
     BRIEF_TEXT,
@@ -36,15 +34,10 @@ unsigned tree_sitter_doxygen_external_scanner_serialize(void *payload, char *buf
 void tree_sitter_doxygen_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
     Scanner *scanner = (Scanner *)payload;
 
+    assert(length == 2 || length == 0);
     if (length == 2) {
         scanner->codeblock_delimiter_length = (uint32_t)buffer[0];
         scanner->codeblock_start_column = (uint32_t)buffer[1];
-    } else if (length != 0 && length != 2) {
-        fprintf(stderr,
-                "tree-sitter-doxygen: Invalid buffer length %d! This should "
-                "never happen\n",
-                length);
-        abort();
     }
 }
 
@@ -122,7 +115,7 @@ bool tree_sitter_doxygen_external_scanner_scan(void *payload, TSLexer *lexer, co
                 advance(lexer);
                 scanner->codeblock_delimiter_length++;
             }
-            if (isalpha(lexer->lookahead)) {
+            if (iswalpha(lexer->lookahead)) {
                 lexer->mark_end(lexer);
                 lexer->result_symbol = CODE_BLOCK_START;
                 return true;
@@ -132,8 +125,8 @@ bool tree_sitter_doxygen_external_scanner_scan(void *payload, TSLexer *lexer, co
         return false;
     }
 
-    if (valid_symbols[CODE_BLOCK_LANGUAGE] && isalnum(lexer->lookahead)) {
-        while (isalnum(lexer->lookahead)) {
+    if (valid_symbols[CODE_BLOCK_LANGUAGE] && iswalnum(lexer->lookahead)) {
+        while (iswalnum(lexer->lookahead)) {
             advance(lexer);
         }
 
