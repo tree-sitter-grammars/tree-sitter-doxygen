@@ -2,43 +2,57 @@
   "name": "tree-sitter-doxygen",
   "version": "1.1.0",
   "description": "Doxygen grammar for tree-sitter",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tree-sitter-grammars/tree-sitter-doxygen.git"
+  },
+  "funding": "",
+  "license": "MIT",
+  "author": {
+    "name": "Amaan Qureshi",
+    "email": "amaanq12@gmail.com",
+    "url": ""
+  },
   "main": "bindings/node",
+  "types": "bindings/node",
   "keywords": [
-    "parser",
-    "lexer",
+    "incremental",
+    "parsing",
+    "tree-sitter",
     "doxygen"
   ],
-  "author": "Amaan Qureshi <amaanq12@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/amaanq/tree-sitter-doxygen/issues"
-  },
-  "homepage": "https://github.com/amaanq/tree-sitter-doxygen#readme",
+  "files": [
+    "grammar.js",
+    "tree-sitter.json",
+    "binding.gyp",
+    "prebuilds/**",
+    "bindings/node/*",
+    "queries/*",
+    "src/**",
+    "*.wasm"
+  ],
   "dependencies": {
-    "nan": "^2.17.0"
+    "node-addon-api": "^8.5.0",
+    "node-gyp-build": "^4.8.4"
   },
   "devDependencies": {
-    "eslint": "^8.47.0",
-    "eslint-config-google": "^0.14.0",
-    "tree-sitter-cli": "0.20.8"
+    "prebuildify": "^6.0.1",
+    "tree-sitter": "^0.25.0",
+    "tree-sitter-cli": "^0.26.0"
   },
-  "repository": "https://github.com/amaanq/tree-sitter-doxygen",
-  "scripts": {
-    "build": "tree-sitter generate && node-gyp build",
-    "lint": "eslint grammar.js",
-    "parse": "tree-sitter parse",
-    "test": "tree-sitter test"
+  "peerDependencies": {
+    "tree-sitter": "^0.25.0"
   },
-  "tree-sitter": [
-    {
-      "scope": "text.doxygen",
-      "injection-regex": "doxygen",
-      "highlights": [
-        "queries/highlights.scm"
-      ],
-      "injections": [
-        "queries/injections.scm"
-      ]
+  "peerDependenciesMeta": {
+    "tree-sitter": {
+      "optional": true
     }
-  ]
+  },
+  "scripts": {
+    "install": "node-gyp-build",
+    "prestart": "tree-sitter build --wasm",
+    "start": "tree-sitter playground",
+    "test": "node --test bindings/node/*_test.js"
+  }
 }
